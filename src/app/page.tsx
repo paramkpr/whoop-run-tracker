@@ -12,7 +12,7 @@ export default function Home() {
     },
   })
 
-  const [workouts, setWorkouts] = useState<any[]>([])
+  const [workouts, setWorkouts] = useState<unknown[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

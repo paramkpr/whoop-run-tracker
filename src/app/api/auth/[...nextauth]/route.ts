@@ -33,7 +33,7 @@ export const authOptions: AuthOptions = {
                 url: "https://api.prod.whoop.com/oauth/oauth2/token",
                 // whoop expects code in a different way so we must override
                 // default next-auth oAuth impl
-                async request({ client, params, checks, provider }) {
+                async request({params, provider }) {
                   const tokenUrl = "https://api.prod.whoop.com/oauth/oauth2/token" 
                   const searchParams = new URLSearchParams()
                   searchParams.append('grant_type', 'authorization_code')
@@ -68,7 +68,7 @@ export const authOptions: AuthOptions = {
         }
     ],
     callbacks: {
-        async jwt({ token, account, profile }) {
+        async jwt({ token, account }) {
             if (account) {
                 token.accessToken = account.access_token
                 token.refreshToken = account.refresh_token
