@@ -25,7 +25,7 @@ export const authOptions: AuthOptions = {
                 url: "https://api.prod.whoop.com/oauth/oauth2/auth",
                 params: {
                     scope: "offline read:workout read:recovery read:profile read:body_measurement",
-                    redirect_uri: "http://localhost:3000/api/auth/callback/whoop"
+                    redirect_uri: process.env.NEXTAUTH_URL + "/api/auth/callback/whoop"
                 }
             },
             token: {
@@ -53,7 +53,7 @@ export const authOptions: AuthOptions = {
                   return { tokens }
                 }
             },
-            userinfo: "https://api.prod.whoop.com/developer/v1/user/profile/basic",
+            userinfo: process.env.WHOOP_BASE_URL + "/v1/user/profile/basic",
             clientId: process.env.WHOOP_CLIENT_ID,
             clientSecret: process.env.WHOOP_CLIENT_SECRET,
             profile(profile) {
