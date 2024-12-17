@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import { AuthOptions } from "next-auth";
-import { signIn } from "next-auth/react";
 
 
 declare module "next-auth" {
@@ -68,10 +67,6 @@ export const authOptions: AuthOptions = {
             }
         }
     ],
-    pages: {
-        signIn: 'api/auth/signin',
-        error: 'api/auth/error'
-    },
     callbacks: {
         async jwt({ token, account, profile }) {
             if (account) {
