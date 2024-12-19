@@ -1,8 +1,10 @@
+// src/app/page.tsx
 'use client'
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
 import { redirect } from "next/navigation"
-
+import Dashboard from './components/Dashboard'
+import { Workout } from '@/lib/types'  // Import the type we created earlier
 
 export default function Home() {
   const { data: session, status } = useSession({
@@ -12,24 +14,21 @@ export default function Home() {
     },
   })
 
-  const [workouts, setWorkouts] = useState<unknown[]>([])
+  const [workouts, setWorkouts] = useState<Workout[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // this uses OUR API endpoint to get the workouts, 
-    // the reason we don't have to auth is because this is unreachable
-    // without being logged in, however, it is not explict which makes
-    // me a little uncomfortable 
     const fetchWorkouts = async () => {
       try {
         const response = await fetch('/api/workouts')
         if (!response.ok) {
-          throw new Error('Failed to fetch workouts')
+          throw new Error(`Failed to fetch workouts. Error Code: ${response.status}`)
         }
+
         const data = await response.json()
-        console.log('Whoop Data: ', data)
-        setWorkouts(data)
+        setWorkouts(data.records)  // Note: assuming the API returns { records: Workout[] }
+
       } catch(error) {
         setError(error instanceof Error ? error.message: 'An error occurred')
       } finally {
@@ -44,22 +43,39 @@ export default function Home() {
 
   if (status === "loading" || loading) {
     return (
-      <>
-        <div className="p-8"> Loading... </div>
-      </>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
     )
   }
 
   if (error) {
-    return <div className="p-8 text-red-500"> Error: {error} </div>
+    return (
+      <div className="p-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">My Whoop Workouts</h1>
-      <pre className="bg-gray-100 text-black p-4 rounded overflow-auto">
-        {JSON.stringify(workouts, null, 2)}
-      </pre>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-0">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            Whoop Workout Analytics
+          </h1>
+          {workouts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No workouts found</p>
+            </div>
+          ) : (
+            <Dashboard workouts={workouts} />
+          )}
+        </div>
+      </div>
     </div>
   )
 }

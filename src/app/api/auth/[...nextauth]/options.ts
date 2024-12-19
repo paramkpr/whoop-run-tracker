@@ -57,7 +57,6 @@ export const authOptions: AuthOptions = {
             clientId: process.env.WHOOP_CLIENT_ID,
             clientSecret: process.env.WHOOP_CLIENT_SECRET,
             profile(profile) {
-                console.log("Profile from Whoop:", profile)
                 return {
                     id: profile.user_id.toString(),
                     name: `${profile.first_name} ${profile.last_name}`,
@@ -79,7 +78,6 @@ export const authOptions: AuthOptions = {
             return session
         },
         async redirect({ url, baseUrl }) {
-            console.log("Redirect Callback: ", {url, baseUrl})
             return url.startsWith(baseUrl) ? url : baseUrl
         }
     },
